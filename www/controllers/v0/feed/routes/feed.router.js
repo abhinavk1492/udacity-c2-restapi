@@ -39,7 +39,19 @@ router.get('/:id', (req, res) => __awaiter(this, void 0, void 0, function* () {
 // update a specific resource
 router.patch('/:id', auth_router_1.requireAuth, (req, res) => __awaiter(this, void 0, void 0, function* () {
     //@TODO try it yourself
-    res.send(500).send("not implemented");
+    let { id } = req.params;
+    const caption = req.body.caption;
+    const fileName = req.body.url;
+    const item = yield FeedItem_1.FeedItem.findByPk(id);
+    if (fileName) {
+        item.url = fileName;
+    }
+    if (caption) {
+        item.caption = caption;
+    }
+    const saved_item = yield item.save();
+    // saved_item.url = AWS.getGetSignedUrl(saved_item.url);
+    res.status(201).send(saved_item);
 }));
 // Get a signed url to put a new item in the bucket
 router.get('/signed-url/:fileName', auth_router_1.requireAuth, (req, res) => __awaiter(this, void 0, void 0, function* () {
